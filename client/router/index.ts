@@ -2,9 +2,12 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import CreatePostView from "../views/CreatePostView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -16,9 +19,21 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: "/+post",
+      name: "+Post",
+      component: CreatePostView,
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/setting",
       name: "Settings",
       component: SettingView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: ProfileView,
       meta: { requiresAuth: true },
     },
     {
@@ -29,9 +44,15 @@ const router = createRouter({
       beforeEnter: (to, from) => {
         const { isLoggedIn } = storeToRefs(useUserStore());
         if (isLoggedIn.value) {
-          return { name: "Settings" };
+          return { name: "Profile" };
         }
       },
+    },
+    {
+      path: "/search",
+      name: "Search",
+      component: SearchView,
+      meta: { requiresAuth: false },
     },
     {
       path: "/:catchAll(.*)",

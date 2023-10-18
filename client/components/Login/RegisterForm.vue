@@ -5,10 +5,12 @@ import { ref } from "vue";
 
 const username = ref("");
 const password = ref("");
+const anonymousMode = ref(false);
+const spotLiteOption = ref(false);
 const { createUser, loginUser, updateSession } = useUserStore();
 
 async function register() {
-  await createUser(username.value, password.value);
+  await createUser(username.value, password.value, spotLiteOption.value, anonymousMode.value,);
   await loginUser(username.value, password.value);
   void updateSession();
   void router.push({ name: "Home" });
@@ -26,6 +28,14 @@ async function register() {
       <div class="pure-control-group">
         <label for="aligned-password">Password</label>
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="aligned-password">SpotLite Opt-In</label>
+        <input type="checkbox" v-model.trim="spotLiteOption" id="aligned-spotLiteOption" />
+      </div>
+      <div class="pure-control-group">
+        <label for="aligned-password">Anonymous Mode</label>
+        <input type="checkbox" v-model.trim="anonymousMode" id="aligned-anonymousMode" />
       </div>
       <div class="pure-controls">
         <button type="submit" class="pure-button pure-button-primary">Register</button>

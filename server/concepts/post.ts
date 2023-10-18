@@ -5,6 +5,7 @@ import { NotAllowedError, NotFoundError } from "./errors";
 
 export interface PostOptions {
   backgroundColor?: string;
+  category?: string;
 }
 
 export interface PostDoc extends BaseDoc {
@@ -26,6 +27,15 @@ export default class PostConcept {
       sort: { dateUpdated: -1 },
     });
     return posts;
+  }
+
+  async doesPostExist(_id: ObjectId) {
+    const post = await this.posts.readOne({ _id });
+    if (!post) {
+      throw new NotFoundError(`Post ${_id} does not exist!`);
+    } else {
+      return new ObjectId(_id);
+    }
   }
 
   async getByAuthor(author: ObjectId) {

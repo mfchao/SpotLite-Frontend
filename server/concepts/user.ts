@@ -5,14 +5,18 @@ import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 export interface UserDoc extends BaseDoc {
   username: string;
   password: string;
+  spotLiteOption: boolean;
+  bio: string;
+  socials: string;
+  anonymousMode: boolean;
 }
 
 export default class UserConcept {
   public readonly users = new DocCollection<UserDoc>("users");
 
-  async create(username: string, password: string) {
-    await this.canCreate(username, password);
-    const _id = await this.users.createOne({ username, password });
+  async create(username: string, password: string, spotLiteOption: boolean, bio: string, socials: string, anonymousMode: boolean) {
+    await this.canCreate(username, password, spotLiteOption, anonymousMode);
+    const _id = await this.users.createOne({ username, password, spotLiteOption, bio, socials, anonymousMode });
     return { msg: "User created successfully!", user: await this.users.readOne({ _id }) };
   }
 
@@ -36,6 +40,16 @@ export default class UserConcept {
       throw new NotFoundError(`User not found!`);
     }
     return this.sanitizeUser(user);
+  }
+
+  //get spotlite pool if exits
+  async getSpotLitePool() {
+    const usersWithSpotLiteOption = await this.users.readMany({ spotLiteOption: true });
+    return usersWithSpotLiteOption;
+  }
+
+  async getSpotLiteIDs(spotliterIDs: ObjectId[]) {
+    return await this.users.readMany({ _id: { $in: spotliterIDs } });
   }
 
   async idsToUsernames(ids: ObjectId[]) {
@@ -81,16 +95,30 @@ export default class UserConcept {
     }
   }
 
-  private async canCreate(username: string, password: string) {
+  private async canCreate(username: string, password: string, spotLiteOption: boolean, anonymousMode: boolean) {
     if (!username || !password) {
-      throw new BadValuesError("Username and password must be non-empty!");
+      throw new BadValuesError("Username, password, spotLiteOption, and anonymousMode must be non-empty!");
     }
     await this.isUsernameUnique(username);
+    await this.validateSpotLiteOption(spotLiteOption);
+    await this.validateAnonymousMode(anonymousMode);
   }
 
   private async isUsernameUnique(username: string) {
     if (await this.users.readOne({ username })) {
       throw new NotAllowedError(`User with username ${username} already exists!`);
+    }
+  }
+
+  private async validateSpotLiteOption(spotLiteOption: any) {
+    if (spotLiteOption !== true && spotLiteOption !== false) {
+      throw new BadValuesError("spotLiteOption must be a valid boolean value or string representation ('true' or 'false').");
+    }
+  }
+
+  private async validateAnonymousMode(anonymousMode: any) {
+    if (anonymousMode !== true && anonymousMode !== false) {
+      throw new BadValuesError("anonymousMode must be a valid boolean value or string representation ('true' or 'false').");
     }
   }
 }

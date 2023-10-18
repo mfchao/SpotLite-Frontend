@@ -14,9 +14,9 @@ export const useUserStore = defineStore(
       currentUsername.value = "";
     };
 
-    const createUser = async (username: string, password: string) => {
+    const createUser = async (username: string, password: string, spotLiteOption: boolean, anonymousMode: boolean) => {
       await fetchy("api/users", "POST", {
-        body: { username, password },
+        body: { username, password, spotLiteOption, anonymousMode },
       });
     };
 
@@ -24,6 +24,17 @@ export const useUserStore = defineStore(
       await fetchy("api/login", "POST", {
         body: { username, password },
       });
+    };
+
+    const getUsers = async (username?: string) => {
+      let query: Record<string, string> = username !== undefined ? { username } : {};
+      let userResults;
+      try {
+        userResults = await fetchy(`api/users/`, "GET", { query });
+      } catch (_) {
+        return;
+      }
+      return userResults;
     };
 
     const updateSession = async () => {
@@ -58,6 +69,7 @@ export const useUserStore = defineStore(
       logoutUser,
       updateUser,
       deleteUser,
+      getUsers,
     };
   },
   { persist: true },

@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import EditPostForm from "@/components/Post/EditPostForm.vue";
-import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
-import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
+
+import PostComponent from "@/components/Post/PostComponent.vue";
+import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
 
-const loaded = ref(false);
+
+const { currentUsername } = storeToRefs(useUserStore());
+const { getUsers } = useUserStore();
+
+
+const loadedPost = ref(false);
+
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 let searchAuthor = ref("");
+let userBio = ref("");
+let userSocials = ref("");
+
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -25,30 +33,41 @@ async function getPosts(author?: string) {
   posts.value = postResults;
 }
 
-function updateEditing(id: string) {
-  editing.value = id;
-}
-
 onBeforeMount(async () => {
-  await getPosts();
-  loaded.value = true;
+  await getPosts(currentUsername.value);
+  loadedPost.value = true;
+  
+  const fetchedUser = await getUsers(currentUsername.value);
+  userBio.value = fetchedUser[0].bio;
+  userSocials.value = fetchedUser[0].socials;
+  
 });
+
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
-    <h2>Filter:</h2>
-    <!-- filter posts TODO -->
-  </section>
+
+<h3>Your Info:</h3>
+
+    <section class="posts" v-if="userBio && userSocials">
+    
+        <p class="username">{{ currentUsername }}</p>
+        <p class="bio">{{ userBio}}</p>
+        <p class="socials">{{ userSocials }}</p>
+    
+    </section>  
+
+
+<h3>Your Posts:</h3>
   
-  <section class="posts" v-if="loaded && posts.length !== 0">
+  <section class="posts" v-if="loadedPost && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" />
     </article>
   </section>
-  <p v-else-if="loaded">No posts found</p>
-  <p v-else>Loading...</p>
+
+
+  
 </template>
 
 <style scoped>
@@ -74,7 +93,7 @@ article {
   padding: 1em;
 }
 
-.posts {
+.posts, .users {
   padding: 1em;
 }
 

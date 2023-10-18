@@ -2,7 +2,8 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Friend, Post, User, WebSession } from "./app";
+import { Comment, Friend, Post, SpotInfo, Spotlite, User, Vote, WebSession } from "./app";
+import { CommentDoc } from "./concepts/comment";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
@@ -16,8 +17,13 @@ class Routes {
   }
 
   @Router.get("/users")
-  async getUsers() {
-    return await User.getUsers();
+  async getUsers(username: string) {
+    return await User.getUsers(username);
+  }
+
+  @Router.get("/users/:spotLiteOption")
+  async getSpotLitePool() {
+    return await User.getSpotLitePool();
   }
 
   @Router.get("/users/:username")
@@ -26,9 +32,9 @@ class Routes {
   }
 
   @Router.post("/users")
-  async createUser(session: WebSessionDoc, username: string, password: string) {
+  async createUser(session: WebSessionDoc, username: string, password: string, spotLiteOption: boolean, bio: string, socials: string, anonymousMode: boolean) {
     WebSession.isLoggedOut(session);
-    return await User.create(username, password);
+    return await User.create(username, password, spotLiteOption, bio, socials, anonymousMode);
   }
 
   @Router.patch("/users")
@@ -135,6 +141,116 @@ class Routes {
     const user = WebSession.getUser(session);
     const fromId = (await User.getUserByUsername(from))._id;
     return await Friend.rejectRequest(fromId, user);
+  }
+
+  @Router.post("/comments")
+  async createComment(session: WebSessionDoc, post: ObjectId, content: string, replies?: ObjectId) {
+    const user = WebSession.getUser(session);
+    const postExists = await Post.doesPostExist(post);
+    return await Comment.create(user, postExists, content, replies);
+  }
+
+  @Router.delete("/comments/:_id")
+  async deleteComment(session: WebSessionDoc, _id: ObjectId) {
+    const user = WebSession.getUser(session);
+    await Comment.isAuthor(user, _id);
+    return Comment.delete(_id);
+  }
+
+  @Router.get("/comments")
+  async getComments(post?: ObjectId) {
+    if (post) {
+      await Post.doesPostExist(post);
+      return await Comment.getByPost(post);
+    } else {
+      return await Comment.getComments({});
+    }
+  }
+
+  @Router.patch("/comments/:_id")
+  async updateComment(session: WebSessionDoc, _id: ObjectId, update: Partial<CommentDoc>) {
+    const user = WebSession.getUser(session);
+    await Comment.isAuthor(user, _id);
+    return await Comment.update(_id, update);
+  }
+
+  @Router.post("/votes/upvote")
+  async upVote(session: WebSessionDoc, comment?: ObjectId, post?: ObjectId) {
+    const user = WebSession.getUser(session);
+    if (comment) {
+      await Comment.getComment(comment);
+      return await Vote.upVote(user, comment, post);
+    } else if (post) {
+      await Post.doesPostExist(post);
+      return await Vote.upVote(user, comment, post);
+    }
+  }
+
+  @Router.post("/votes/downvote")
+  async downVote(session: WebSessionDoc, comment?: ObjectId, post?: ObjectId) {
+    const user = WebSession.getUser(session);
+    if (comment) {
+      await Comment.getComment(comment);
+      return await Vote.downVote(user, comment, post);
+    } else if (post) {
+      await Post.doesPostExist(post);
+      return await Vote.downVote(user, comment, post);
+    }
+  }
+
+  @Router.get("/votes")
+  async getVotes(comment?: ObjectId, post?: ObjectId) {
+    if (comment) {
+      return await Vote.getbyComment(comment);
+    } else if (post) {
+      return await Vote.getbyPost(post);
+    } else {
+      return await Vote.getVotes({});
+    }
+  }
+
+  @Router.post("/spotlites")
+  async createSpotliters() {
+    let pool = await User.getSpotLitePool();
+    const spotLiterIds = pool.map((spotliter) => spotliter._id);
+    return await Spotlite.createSpotliters(spotLiterIds);
+  }
+
+  @Router.get("/spotlites")
+  async getSpotliters() {
+    return await Spotlite.getSpotliters();
+  }
+
+  @Router.patch("/spotlites")
+  async resetSpotliters() {
+    let pool = await User.getSpotLitePool();
+    const spotLiterIds = pool.map((spotliter) => spotliter._id);
+    return await Spotlite.resetSpotliters(spotLiterIds);
+  }
+
+  @Router.patch("/spotlites/cycle")
+  async incrementCycleDays() {
+    let pool = await User.getSpotLitePool();
+    const spotLiterIds = pool.map((spotliter) => spotliter._id);
+    return await Spotlite.incrementCycleDays(spotLiterIds);
+  }
+
+  @Router.post("/spotinfo")
+  async createSpotInfo() {
+    let spotliters = await Spotlite.getSpotliters();
+    let spotliterIDs = spotliters.map((spotliter) => spotliter.spotliter);
+    const spotliterUsers = await User.getSpotLiteIDs(spotliterIDs);
+    const spotLiterBios = spotliterUsers.map((user) => user.bio);
+    const spotLiterSocials = spotliterUsers.map((user) => user.socials);
+    return await SpotInfo.createSpotInfo(spotliterIDs, spotLiterBios, spotLiterSocials);
+  }
+  @Router.get("/spotinfo/intro")
+  async getInfo() {
+    return await SpotInfo.getIntros();
+  }
+  @Router.get("/spotinfo/closing")
+  async getClosing() {
+    return await SpotInfo.getClosings();
   }
 }
 

@@ -19,6 +19,12 @@ onBeforeMount(async () => {
     // User is not logged in
   }
 });
+
+const profileLink = computed(() => {
+  return currentRouteName.value === 'Profile'
+    ? { text: 'Settings', route: 'Settings' }
+    : { text: 'Profile', route: 'Profile' };
+});
 </script>
 
 <template>
@@ -27,7 +33,7 @@ onBeforeMount(async () => {
       <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1>SpotLite</h1>
         </RouterLink>
       </div>
       <ul>
@@ -35,10 +41,18 @@ onBeforeMount(async () => {
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }"> +Post </RouterLink>
+        </li>
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: profileLink.route }" :class="{ underline: currentRouteName == profileLink.route }">
+            {{ profileLink.text }}
+          </RouterLink>        
         </li>
         <li v-else>
           <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+        </li>
+        <li>
+          <RouterLink :to="{ name: 'Search' }" :class="{ underline: currentRouteName == 'Search' }"> Search </RouterLink>
         </li>
       </ul>
     </nav>
