@@ -21,6 +21,11 @@ class Routes {
     return await User.getUsers(username);
   }
 
+  @Router.get("/users/:_id")
+  async getUserByID(_id: ObjectId) {
+    return await User.getUserById(_id);
+  }
+
   @Router.get("/users/:spotLiteOption")
   async getSpotLitePool() {
     return await User.getSpotLitePool();
@@ -221,6 +226,11 @@ class Routes {
     return await Spotlite.getSpotliters();
   }
 
+  @Router.get("/spotlites/:spotliter")
+  async isSpotliter(userId: ObjectId) {
+    return await Spotlite.isSpotliter(userId);
+  }
+
   @Router.patch("/spotlites")
   async resetSpotliters() {
     let pool = await User.getSpotLitePool();
@@ -229,7 +239,7 @@ class Routes {
   }
 
   @Router.patch("/spotlites/cycle")
-  async incrementCycleDays() {
+  async incrementCycleDay() {
     let pool = await User.getSpotLitePool();
     const spotLiterIds = pool.map((spotliter) => spotliter._id);
     return await Spotlite.incrementCycleDays(spotLiterIds);

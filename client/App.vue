@@ -1,23 +1,45 @@
 <script setup lang="ts">
+import { useSpotliteStore } from "@/stores/spotlite";
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
+import SelectedSpotLiteView from "@/views/SelectedSpotLiteView.vue";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
+
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
 const { toast } = storeToRefs(useToastStore());
+const { getUsers } = useUserStore();
+
+
+const { isSpotliter } = useSpotliteStore();
+const { currentUsername } = storeToRefs(useUserStore());
+let isASpotliter = ref(false);
+
+async function checkIfSpotliter(userId: string) {
+  const isUserSpotliter = await isSpotliter(userId);
+  if (isUserSpotliter) {
+    isASpotliter.value = true;
+  } else {
+    isASpotliter.value = false;
+  }
+};
+
 
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
   try {
     await userStore.updateSession();
+    const fetchedUser = await getUsers(currentUsername.value);
+    await checkIfSpotliter(fetchedUser[0]._id)
   } catch {
     // User is not logged in
   }
+  
 });
 
 const profileLink = computed(() => {
@@ -40,7 +62,7 @@ const profileLink = computed(() => {
         <li>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
-        <li v-if="isLoggedIn">
+        <li v-if="isLoggedIn && isASpotliter">
           <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }"> +Post </RouterLink>
         </li>
         <li v-if="isLoggedIn">
@@ -56,6 +78,7 @@ const profileLink = computed(() => {
         </li>
       </ul>
     </nav>
+    <SelectedSpotLiteView  v-if="isASpotliter"/>
     <article v-if="toast !== null" class="toast" :class="toast.style">
       <p>{{ toast.message }}</p>
     </article>
