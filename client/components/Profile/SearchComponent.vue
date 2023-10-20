@@ -18,8 +18,8 @@ async function getPosts(author?: string) {
   let postResults;
   try {
     postResults = await fetchy("api/posts", "GET", { query });
-  } catch (_) {
-    return;
+  } catch (error) {
+    console.log('An error occurred:', error);
   }
   searchAuthor.value = author ? author : "";
   posts.value = postResults;

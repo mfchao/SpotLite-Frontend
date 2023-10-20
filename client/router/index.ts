@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import CommentView from "../views/CommentView.vue";
 import CreatePostView from "../views/CreatePostView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
@@ -58,6 +59,12 @@ const router = createRouter({
       path: "/:catchAll(.*)",
       name: "not-found",
       component: NotFoundView,
+    },
+    {
+      path: "/post/:id",
+      name: "CommentView",
+      component: CommentView,
+      meta: { requiresAuth: false },
     },
   ],
 });

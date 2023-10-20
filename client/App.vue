@@ -62,7 +62,7 @@ const profileLink = computed(() => {
         <li>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
-        <li v-if="isLoggedIn && isASpotliter">
+        <li v-if="isLoggedIn">
           <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }"> +Post </RouterLink>
         </li>
         <li v-if="isLoggedIn">

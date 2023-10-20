@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import CommentListComponent from "@/components/Comment/CommentListComponent.vue";
 import { useUserStore } from "@/stores/user";
+import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
+
+
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
+
 
 const deletePost = async () => {
   try {
@@ -16,9 +20,14 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+
+
 </script>
 
 <template>
+  <!-- <RouterLink :to="{ name: 'CommentView', params: {id: props.post._id } }"  > -->
+    
   <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
   <div class="base">
@@ -31,6 +40,9 @@ const deletePost = async () => {
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </article>
   </div>
+
+  <CommentListComponent :postID="props.post._id"/>
+<!-- </RouterLink> -->
 </template>
 
 <style scoped>

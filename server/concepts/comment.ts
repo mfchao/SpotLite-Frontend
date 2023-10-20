@@ -6,19 +6,20 @@ export interface CommentDoc extends BaseDoc {
   author: ObjectId;
   post: ObjectId;
   content: string;
-  replies?: ObjectId[];
+  parent?: ObjectId;
+  children?: Comment[];
 }
 
 export default class CommentConcept {
   public readonly comments = new DocCollection<CommentDoc>("comments");
 
-  async create(author: ObjectId, post: ObjectId, content: string, replies?: ObjectId) {
-    //add replies
-    const _id = await this.comments.createOne({ author, post, content });
-
-    // if (replies) {
-    //   await this.updateParentComment(replies, _id);
-    // }
+  async create(author: ObjectId, post: ObjectId, content: string, parent?: ObjectId) {
+    let _id;
+    if (parent) {
+      _id = await this.comments.createOne({ author, post, content, parent });
+    } else {
+      _id = await this.comments.createOne({ author, post, content });
+    }
 
     await this.canCreate(post, content);
     return { msg: "Comment successfully created!", comment: await this.comments.readOne({ _id }) };
@@ -91,7 +92,7 @@ export default class CommentConcept {
   // private async updateParentComment(parentCommentId: ObjectId, replyId: ObjectId) {
   //   const parentComment = await this.comments.readOne({ _id: parentCommentId });
   //   if (parentComment) {
-  //     await this.comments.updateOne({ _id: parentCommentId }, { $set: { "replies.$": replyId } });
+  //     await this.comments.updateOne({ _id: parentCommentId }, { $set: { "parent.$": replyId } });
   //   }
   // }
 }

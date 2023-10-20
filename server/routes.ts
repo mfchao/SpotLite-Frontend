@@ -94,6 +94,11 @@ class Routes {
     return await Post.update(_id, update);
   }
 
+  @Router.get("/posts/:_id")
+  async getPostByID(_id: ObjectId) {
+    return await Post.getById(_id);
+  }
+
   @Router.delete("/posts/:_id")
   async deletePost(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);
@@ -164,12 +169,14 @@ class Routes {
 
   @Router.get("/comments")
   async getComments(post?: ObjectId) {
+    let comments;
     if (post) {
-      await Post.doesPostExist(post);
-      return await Comment.getByPost(post);
+      const id = await Post.doesPostExist(post);
+      comments = await Comment.getByPost(id);
     } else {
-      return await Comment.getComments({});
+      comments = await Comment.getComments({});
     }
+    return Responses.comments(comments);
   }
 
   @Router.patch("/comments/:_id")
