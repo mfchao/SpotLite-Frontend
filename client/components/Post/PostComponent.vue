@@ -29,6 +29,8 @@ const deletePost = async () => {
   <!-- <RouterLink :to="{ name: 'CommentView', params: {id: props.post._id } }"  > -->
     
   <p class="author">{{ props.post.author }}</p>
+  <!-- post image here -->
+  <img class="image" :src="props.post.options?.image" alt="Post image" v-if="props.post.options?.image"/>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
@@ -80,5 +82,10 @@ menu {
 
 .base article:only-child {
   margin-left: auto;
+}
+
+.image {
+  display: flex;
+  align-items: center;
 }
 </style>

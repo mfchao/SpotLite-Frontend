@@ -18,6 +18,8 @@ let searchPost = ref("");
 let replyTo = ref("");
 let replyToComputed = computed(() => replyTo.value);
 let showParentCommentForm = ref(false);
+let showReplyCommentForm = ref(false);
+
 
 const props = defineProps({
   postID: String
@@ -25,7 +27,7 @@ const props = defineProps({
 
 function setReplyTo(id: string) {
   replyTo.value = id;
-  
+  showReplyCommentForm.value = true;
 }
 
 async function getComments(post?: string) {
@@ -46,6 +48,11 @@ function updateEditing(id: string) {
   editing.value = id;
 }
 
+function closeReply()  {
+  showReplyCommentForm.value = false;
+  replyTo.value = '';
+}
+
 
 
 onBeforeMount(async () => {
@@ -61,16 +68,16 @@ onBeforeMount(async () => {
   <section v-if="isLoggedIn">
   </section>
   <button @click="showParentCommentForm = !showParentCommentForm">Add Comment</button>
-  <div v-if="showParentCommentForm || replyTo" class="modal">
+  <div v-if="showParentCommentForm || showReplyCommentForm" class="modal">
     <div class="modal-content">
-    <CreateCommentForm v-if="showParentCommentForm" :postID="props.postID" @refreshComments="getComments" @closeForm="showParentCommentForm = false" />
-    <CreateCommentForm v-if="replyTo" :postID="props.postID" :parent="replyTo" @refreshComments="getComments" @closeForm="replyTo = ''"/>
+    <CreateCommentForm v-if="showParentCommentForm" :postID="props.postID" @refreshComments="getComments(props.postID)" @closeForm="showParentCommentForm = false" />
+    <CreateCommentForm v-if="showReplyCommentForm" :postID="props.postID" :parent="replyTo" @refreshComments="getComments(props.postID)" @closeForm="closeReply"/>
 </div>
 </div>
     <section class="comments" v-if="loaded && comments.length !== 0">
         <article v-for="comment in comments" :key="comment._id">
-          <CommentComponent v-if="editing !== comment._id" :comment="comment" :postID="props.postID"  :replyTo="replyToComputed" :editing="editing" @refreshComments="getComments" @editComment="updateEditing" @replyTo="setReplyTo" @closeForm="replyTo = ''"/>
-          <EditCommentForm v-else :comment="comment" @refreshComments="getComments" @editComment="updateEditing" />
+          <CommentComponent v-if="editing !== comment._id" :comment="comment" :postID="props.postID"  :replyTo="replyToComputed" :editing="editing" @refreshComments="getComments(props.postID)" @editComment="updateEditing" @replyTo="setReplyTo" @closeForm="replyTo = ''"/>
+          <EditCommentForm v-else :comment="comment" @refreshComments="getComments(props.postID)" @editComment="updateEditing" />
         </article>
       </section>
   

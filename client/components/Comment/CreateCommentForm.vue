@@ -40,7 +40,8 @@ async function create() {
     }
     }
   
-  emit("refreshComments");
+  emit("refreshComments", props.postID);
+  emit("closeForm");
   emptyForm();
 }
 

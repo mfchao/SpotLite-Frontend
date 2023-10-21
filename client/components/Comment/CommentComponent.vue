@@ -30,7 +30,17 @@ function updateEditing(id: string) {
 
 async function getVotes(comment?: string, post?: string) {
   let postResults;
+  if (post) {
+    let query: Record<string, string> = post !== undefined ? { post} : { };
+        try {
+      postResults = await fetchy("api/votes", "GET", { query });
+      upvotes.value = postResults[0].upvotes;
+      downvotes.value = postResults[0].downvotes;
+    } catch (error) {
+      console.log('An error occurred:', error);
+    }
   
+  }
   if (comment) {
     let query: Record<string, string> = comment !== undefined ? { comment} : { };
       try {
