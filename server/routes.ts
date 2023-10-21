@@ -204,6 +204,30 @@ class Routes {
     }
   }
 
+  @Router.patch("/votes/upvote")
+  async removeUpvote(session: WebSessionDoc, comment?: ObjectId, post?: ObjectId) {
+    const user = WebSession.getUser(session);
+    if (comment) {
+      await Comment.getComment(comment);
+      return await Vote.removeUpvote(user, comment, post);
+    } else if (post) {
+      await Post.doesPostExist(post);
+      return await Vote.removeUpvote(user, comment, post);
+    }
+  }
+
+  @Router.patch("/votes/downvote")
+  async removeDownvote(session: WebSessionDoc, comment?: ObjectId, post?: ObjectId) {
+    const user = WebSession.getUser(session);
+    if (comment) {
+      await Comment.getComment(comment);
+      return await Vote.removeDownvote(user, comment, post);
+    } else if (post) {
+      await Post.doesPostExist(post);
+      return await Vote.removeDownvote(user, comment, post);
+    }
+  }
+
   @Router.post("/votes/downvote")
   async downVote(session: WebSessionDoc, comment?: ObjectId, post?: ObjectId) {
     const user = WebSession.getUser(session);

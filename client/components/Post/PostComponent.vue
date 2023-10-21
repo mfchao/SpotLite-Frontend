@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import CommentListComponent from "@/components/Comment/CommentListComponent.vue";
+import VoteComponent from "@/components/Vote/VoteComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
-
 
 
 const props = defineProps(["post"]);
@@ -40,7 +40,8 @@ const deletePost = async () => {
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </article>
   </div>
-
+  
+  <VoteComponent :postId="props.post._id" />
   <CommentListComponent :postID="props.post._id"/>
 <!-- </RouterLink> -->
 </template>

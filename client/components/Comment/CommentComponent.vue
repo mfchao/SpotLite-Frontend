@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import EditCommentForm from "@/components/Comment/EditCommentForm.vue";
+import VoteComponent from "@/components/Vote/VoteComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
@@ -7,11 +8,12 @@ import { onMounted, ref, watchEffect } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 
-
 const props = defineProps(["comment", "postID", "replyTo"]);
 const emit = defineEmits(["editComment", "refreshComments", "replyTo", "closeForm"]);
 const { currentUsername } = storeToRefs(useUserStore());
 let editing = ref("");
+const upvotes = ref(0);
+const downvotes = ref(0);
 
 const deleteComment = async () => {
   try {
@@ -26,6 +28,22 @@ function updateEditing(id: string) {
   editing.value = id;
 }
 
+async function getVotes(comment?: string, post?: string) {
+  let postResults;
+  
+  if (comment) {
+    let query: Record<string, string> = comment !== undefined ? { comment} : { };
+      try {
+      postResults = await fetchy("api/votes", "GET", { query });
+      upvotes.value = postResults[0].upvotes;
+      downvotes.value = postResults[0].downvotes;
+    } catch (error) {
+      console.log('An error occurred:', error);
+    }
+  } 
+}
+
+
 watchEffect(async () => {
   if (props.comment.children && props.comment.children.length > 0) {
     props.comment.childrenComments = await fetchy(`api/comments/${props.comment._id}`, "GET");
@@ -36,6 +54,8 @@ onMounted(async () => {
   if (props.comment.children && props.comment.children.length > 0) {
     props.comment.childrenComments = await fetchy(`api/comments/${props.comment._id}`, "GET");
   }
+
+  await getVotes(props.comment._id, undefined);
 });
 </script>
 
@@ -55,6 +75,7 @@ onMounted(async () => {
       <button @click="emit('replyTo', props.comment._id)">Reply</button>
     </div>
     <!-- <CreateCommentForm v-if="props.replyTo === props.comment._id" :postID="props.postID" :parent="props.comment._id" @refreshComments="emit('refreshComments')" @closeForm="emit('closeForm')"/> -->
+    <VoteComponent :commentId="props.comment._id" :initUpvotes="upvotes" :initDownvotes="downvotes"/>
 
 
     <!-- Recursive component -->
