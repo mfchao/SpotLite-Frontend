@@ -5,7 +5,7 @@ import { fetchy } from "@/utils/fetchy";
 export const useCommentStore = defineStore(
   "comment",
   () => {
-    const createComment = async (author: string, post: string, content: string) => {
+    const createParentComment = async (author: string, post: string, content: string) => {
       try {
         await fetchy(`api/comments`, "POST", {
           body: { author, post, content },
@@ -15,8 +15,19 @@ export const useCommentStore = defineStore(
       }
     };
 
+    const createChildrenComment = async (author: string, post: string, content: string, parent: string) => {
+      try {
+        await fetchy(`api/comments`, "POST", {
+          body: { author, post, content, parent },
+        });
+      } catch (_) {
+        return;
+      }
+    };
+
     return {
-      createComment,
+      createParentComment,
+      createChildrenComment,
     };
   },
   { persist: true },

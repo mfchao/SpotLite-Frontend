@@ -5,25 +5,39 @@ import { onBeforeMount, ref } from "vue";
 import { useCommentStore } from "@/stores/comment";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { fetchy } from "../../utils/fetchy";
+
 
 const { currentUsername } = storeToRefs(useUserStore());
 const { getUsers } = useUserStore();
-const { createComment } = useCommentStore();
+const { createParentComment, createChildrenComment } = useCommentStore();
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 
 const props = defineProps({
-  postID: String
+  postID: String,
+  parent: String,
 });
 
 const content = ref("");
 const userID = ref("");
-const emit = defineEmits(["refreshComments"]);
+const emit = defineEmits(["refreshComments", "closeForm"]);
 const postID = props.postID;
 
 async function create() {
     if (postID) {
-        await createComment(userID.value, postID, content.value)
+      if (props.parent) {
+        
+        await fetchy(`api/comments`, "POST", {
+        body: { author: userID.value, post: postID, content: content.value, parent: props.parent },
+      });
+      
+      emit("closeForm");
+    } else {
+      await fetchy(`api/comments`, "POST", {
+        body: { author: userID.value, post: postID, content: content.value },
+      });
+    }
     }
   
   emit("refreshComments");
@@ -38,17 +52,18 @@ onBeforeMount(async () => {
   
   const fetchedUser = await getUsers(currentUsername.value);
   userID.value =fetchedUser[0]._id
- 
-  
+   
 });
 </script>
 
 <template>
     <section v-if="isLoggedIn">
+        
   <form v-if="postID != undefined"  @submit.prevent="create()">
     <label for="content">Comment:</label>
     <textarea id="content" v-model="content" placeholder="Add a comment!" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button" >Submit</button>
+    <button class="pure-button-primary pure-button" @click="emit('closeForm')" >Cancel</button>
   </form>
 </section>
 </template>

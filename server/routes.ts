@@ -154,10 +154,10 @@ class Routes {
   }
 
   @Router.post("/comments")
-  async createComment(session: WebSessionDoc, post: ObjectId, content: string, replies?: ObjectId) {
+  async createComment(session: WebSessionDoc, post: ObjectId, content: string, parent?: ObjectId) {
     const user = WebSession.getUser(session);
     const postExists = await Post.doesPostExist(post);
-    return await Comment.create(user, postExists, content, replies);
+    return await Comment.create(user, postExists, content, parent);
   }
 
   @Router.delete("/comments/:_id")
@@ -176,6 +176,12 @@ class Routes {
     } else {
       comments = await Comment.getComments({});
     }
+    return Responses.comments(comments);
+  }
+
+  @Router.get("/comments/:_id")
+  async getChildrenComments(_id: ObjectId) {
+    let comments = await Comment.getChildrenComments(_id);
     return Responses.comments(comments);
   }
 
