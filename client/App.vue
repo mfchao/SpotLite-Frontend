@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { useSpotliteStore } from "@/stores/spotlite";
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
@@ -18,6 +19,7 @@ const { getUsers } = useUserStore();
 
 const { isSpotliter } = useSpotliteStore();
 const { currentUsername } = storeToRefs(useUserStore());
+const { logoutUser} = useUserStore();
 let isASpotliter = ref(false);
 
 async function checkIfSpotliter(userId: string) {
@@ -29,16 +31,26 @@ async function checkIfSpotliter(userId: string) {
   }
 };
 
+async function logout() {
+  await logoutUser();
+  void router.push({ name: "Home" });
+}
 
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
-  try {
+  
+  if(isLoggedIn.value)  {
+    try {
     await userStore.updateSession();
     const fetchedUser = await getUsers(currentUsername.value);
     await checkIfSpotliter(fetchedUser[0]._id)
   } catch {
     // User is not logged in
   }
+  } else {
+    logout();
+  }
+  
   
 });
 

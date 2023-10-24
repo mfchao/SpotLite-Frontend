@@ -84,7 +84,7 @@ button:hover {
 @font-face {
   font-family: "SF-Compact-Light";
   src: local("SF-Compact-Light"),
-    url("./public/fonts/SF-Compact-Text-Light.ttf") format("truetype");
+    url("./fonts/SF-Compact-Text-Light.ttf") format("truetype");
 }
 
 @font-face {
