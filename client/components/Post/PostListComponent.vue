@@ -37,7 +37,6 @@ onBeforeMount(async () => {
 
 <template>
   <section v-if="isLoggedIn">
-    <h2>Filter:</h2>
     <!-- filter posts TODO -->
   </section>
   
@@ -66,7 +65,10 @@ p,
 }
 
 article {
-  background-color: var(--base-bg);
+  -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+  backdrop-filter: blur(8px); /* Chrome and Opera */
+  box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 8%);
+  background: rgba(255, 255, 255, 0.4); 
   border-radius: 1em;
   display: flex;
   flex-direction: column;

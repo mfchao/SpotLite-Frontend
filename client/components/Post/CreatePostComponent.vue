@@ -11,7 +11,6 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 
 <template>
   <section v-if="isLoggedIn">
-    <h2>Create a post:</h2>
     <CreatePostForm  />
   </section>
   
@@ -20,7 +19,10 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 <style scoped>
 section {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  width: 100%;
   gap: 1em;
 }
 

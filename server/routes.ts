@@ -37,9 +37,9 @@ class Routes {
   }
 
   @Router.post("/users")
-  async createUser(session: WebSessionDoc, username: string, password: string, spotLiteOption: boolean, bio: string, socials: string, anonymousMode: boolean) {
+  async createUser(session: WebSessionDoc, username: string, password: string, spotLiteOption: boolean, bio: string, socials: string, anonymousMode: boolean, photo: string) {
     WebSession.isLoggedOut(session);
-    return await User.create(username, password, spotLiteOption, bio, socials, anonymousMode);
+    return await User.create(username, password, spotLiteOption, bio, socials, anonymousMode, photo);
   }
 
   @Router.patch("/users")

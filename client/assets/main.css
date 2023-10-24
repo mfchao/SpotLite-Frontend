@@ -5,7 +5,7 @@
   --base-bg: #f1f3f5;
 }
 
-button.btn-small {
+/* button.btn-small {
   font-size: 80%;
 }
 
@@ -21,6 +21,32 @@ a.button {
   border-radius: 0.25em;
   padding: 0.375em 0.75em;
   text-decoration: none;
+  font-family: "SF-Compact-Medium";
+} */
+
+button {
+  -webkit-backdrop-filter: blur(8px);
+  /* Safari 9+ */
+  backdrop-filter: blur(8px);
+  /* Chrome and Opera */
+  box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 15%);
+  background: rgba(255, 255, 255, 0.3);
+  color: black;
+  border: none;
+  padding: 0.8em;
+  border-radius: 10px;
+  font: "SF-Compact-Medium";
+  letter-spacing: 0.08em;
+  font-size: 0.8em;
+  cursor: pointer;
+  outline: inherit;
+  text-transform: uppercase;
+  transition: .3s ease;
+  text-transform: uppercase;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .column {
@@ -29,4 +55,75 @@ a.button {
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+
+@font-face {
+  font-family: "SF-Compact-Medium";
+  src: local("SF-Compact-Medium"),
+    url("./fonts/SF-Compact-Text-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-MediumItalic";
+  src: local("SF-Compact-Medium"),
+    url("./fonts/SF-Compact-Text-MediumItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-Semibold";
+  src: local("SF-Compact-Semibold"),
+    url("./fonts/SF-Compact-Text-Semibold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-Regular";
+  src: local("SF-Compact-Regular"),
+    url("./fonts/SF-Compact-Text-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-Light";
+  src: local("SF-Compact-Light"),
+    url("./public/fonts/SF-Compact-Text-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-Thin";
+  src: local("SF-Compact-Thin"),
+    url("./fonts/SF-Compact-Text-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF-Compact-Bold";
+  src: local("SF-Compact-Bold"),
+    url("./fonts/SF-Compact-Text-Bold.ttf") format("truetype");
+}
+
+
+.SF-Compact-Medium {
+  font-family: "SF-Compact-Medium";
+}
+
+.SF-Compact-MediumItalic {
+  font-family: "SF-Compact-MediumItalic";
+}
+
+.SF-Compact-Semibold {
+  font-family: "SF-Compact-Semibold";
+}
+
+.SF-Compact-Light {
+  font-family: "SF-Compact-Light";
+}
+
+.SF-Compact-Thin {
+  font-family: "SF-Compact-Thin";
+}
+
+.SF-Compact-Bold {
+  font-family: "SF-Compact-Bold";
+}
+
+.SF-Compact-Bold {
+  font-family: "SF-Compact-Regular";
 }

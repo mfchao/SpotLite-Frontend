@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 const author = ref("");
-const emit = defineEmits(["getPostsByAuthor"]);
+const emit = defineEmits(["getPostsByAuthor", "clearUser"]);
 </script>
 
 <template>
@@ -10,7 +10,7 @@ const emit = defineEmits(["getPostsByAuthor"]);
     <fieldset>
       <legend>Search by Author</legend>
       <input id="author" type="text" v-model="author" placeholder="Username" />
-      <button type="submit" class="pure-button pure-button-primary">Search</button>
+      <button type="submit">Search</button>
     </fieldset>
   </form>
 </template>
@@ -19,7 +19,57 @@ const emit = defineEmits(["getPostsByAuthor"]);
 form {
   display: flex;
   gap: 0.5em;
-  padding: 1em;
   align-items: center;
+  padding-left: 1em;
+  padding-top: 0.5em;
+}
+
+legend {
+  text-align: left;
+  font-family: "SF-Compact-Light";
+  font-size: 0.9em;
+}
+
+input {
+  font-size: 14px;
+  font-family: "SF-Compact-Light";
+  border-radius: 6px;
+  line-height: 1.5;
+  padding: 5px 10px;
+  transition: box-shadow 100ms ease-in, border 100ms ease-in, background-color 100ms ease-in;
+  color: rgb(14, 14, 16);
+  background:  rgba(255, 255, 255, 0.09);
+  display: block;
+  height: 36px;
+  -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+  backdrop-filter: blur(8px); /* Chrome and Opera */
+  outline: none;
+  outline-width: 0;
+  border: none;
+  border-width: 0;
+  box-shadow: none;
+}
+
+button {
+  -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+  backdrop-filter: blur(8px); /* Chrome and Opera */
+  box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 15%);
+  background: rgba(255, 255, 255, 0.09); 
+	color: black;
+	padding: 0.8em;
+  border-radius: 10px;
+	font: "SF-Compact-Medium";
+  letter-spacing: 0.08em;
+  font-size: 0.8em;
+	cursor: pointer;
+	outline: 0.1em;
+  border: 2px solid black;
+  text-transform: uppercase;
+  transition: .3s ease;
+  margin-left: 1em;
+}
+
+button:hover {
+  background:rgba(255, 255, 255, 0.3); 
 }
 </style>

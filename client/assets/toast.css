@@ -7,13 +7,14 @@
   border-radius: 6px;
   max-width: 60em;
   margin: 0 auto;
-
+  z-index: 1000;
   color: #fff;
 }
 
 .error {
   background-color: #fa5252;
 }
+
 .success {
-  background-color: #40c057;
+  background-color: #3EC0B0;
 }

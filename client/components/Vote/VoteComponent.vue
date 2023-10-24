@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const { getUsers } = useUserStore();
@@ -21,6 +21,9 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 
 const hasUpvoted = ref(false);
 const hasDownvoted = ref(false);
+
+const upvoteIcon = computed(() => hasUpvoted.value);
+const downvoteIcon = computed(() => hasDownvoted.value);
 
 
 const upvote = async (user: string, comment?: string, post?: string) => {
@@ -141,10 +144,11 @@ async function getVotes(comment?: string, post?: string) {
     let query: Record<string, string> = post !== undefined ? { post} : { };
         try {
       postResults = await fetchy("api/votes", "GET", { query });
-      upvotes.value = postResults[0].upvotes;
-      downvotes.value = postResults[0].downvotes;
-    } catch (error) {
-      console.log('An error occurred:', error);
+      if (postResults[0]) {
+        upvotes.value = postResults[0].upvotes || 0;
+        downvotes.value = postResults[0].downvotes || 0;
+      }
+    } catch  {
     }
   
   }
@@ -152,10 +156,12 @@ async function getVotes(comment?: string, post?: string) {
     let query: Record<string, string> = comment !== undefined ? { comment} : { };
       try {
       postResults = await fetchy("api/votes", "GET", { query });
-      upvotes.value = postResults[0].upvotes;
-      downvotes.value = postResults[0].downvotes;
-    } catch (error) {
-      console.log('An error occurred:', error);
+      if (postResults[0]) {
+        upvotes.value = postResults[0].upvotes || 0;
+        downvotes.value = postResults[0].downvotes || 0;
+      }
+    } catch {
+      
     }
   } 
 }
@@ -179,58 +185,37 @@ onBeforeMount(async () => {
 <template>
   <section v-if="isLoggedIn">
     <div class="votes">
-      <button @click="upvote(userID, commentId, postId)">Upvote</button>
       <span>{{upvotes}}</span>
-      <button @click="downvote(userID, commentId, postId)">Downvote</button>
+      <button @click="upvote(userID, commentId, postId)">
+        <img v-if="upvoteIcon === true" src="@/assets/images/upvoteON.svg" />
+        <img v-else src="@/assets/images/upvote.svg" />
+      </button>
       <span>{{ downvotes }}</span>
+      <button @click="downvote(userID, commentId, postId)">
+        <img v-if="downvoteIcon === true" src="@/assets/images/downvoteON.svg" />
+        <img v-else src="@/assets/images/downvote.svg" />
+      </button>
+      
     </div>
   </section>
   </template>
 
 <style scoped>
-form {
-  background-color: var(--base-bg);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+
+button {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  background: none;
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+  transition: .3s ease;
+  margin-right: 5px;
 }
 
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  height: 6em;
-  border-radius: 4px;
-  resize: none;
+img {
+  width: 1em;
 }
 
-p {
-  margin: 0em;
-}
-
-.author {
-  font-weight: bold;
-  font-size: 1.2em;
-}
-
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  padding: 0;
-  margin: 0;
-}
-
-.base {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.timestamp {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.9em;
-  font-style: italic;
-}
 </style>

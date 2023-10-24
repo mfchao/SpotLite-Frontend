@@ -35,7 +35,7 @@ export default class CommentConcept {
     }
 
     await this.canCreate(post, content);
-    return { msg: "Comment successfully created!", comment: await this.comments.readOne({ _id }) };
+    return { msg: "Comment successfully added!", comment: await this.comments.readOne({ _id }) };
   }
 
   async getChildrenComments(parent: ObjectId) {
@@ -55,7 +55,7 @@ export default class CommentConcept {
 
   async delete(_id: ObjectId) {
     await this.comments.deleteOne({ _id });
-    return { msg: "Comment deleted successfully!" };
+    return { msg: "Comment successfully deleted!" };
   }
 
   async isAuthor(user: ObjectId, _id: ObjectId) {

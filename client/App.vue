@@ -42,39 +42,49 @@ onBeforeMount(async () => {
   
 });
 
-const profileLink = computed(() => {
-  return currentRouteName.value === 'Profile'
-    ? { text: 'Settings', route: 'Settings' }
-    : { text: 'Profile', route: 'Profile' };
-});
+// const profileLink = computed(() => {
+//   return currentRouteName.value === 'Profile'
+//     ? { text: 'Settings', route: 'Settings' }
+//     : { text: 'Profile', route: 'Profile' };
+// });
 </script>
 
 <template>
   <header>
-    <nav>
+    <nav v-if="isLoggedIn">
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
+        
         <RouterLink :to="{ name: 'Home' }">
-          <h1>SpotLite</h1>
+          <img src="@/assets/images/logovect.svg" />
         </RouterLink>
       </div>
       <ul>
-        <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> 
+            <img v-if="currentRouteName == 'Home'" src="@/assets/images/homeON.svg" class="navImage"/>
+            <img v-if="currentRouteName != 'Home'" src="@/assets/images/home.svg" class="navImage"/>
+           </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }"> +Post </RouterLink>
+          <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }">
+            <img v-if="currentRouteName == '+Post'" src="@/assets/images/addON.svg" class="navImage"/>
+            <img v-if="currentRouteName != '+Post'" src="@/assets/images/add.svg" class="navImage"/>
+           </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: profileLink.route }" :class="{ underline: currentRouteName == profileLink.route }">
-            {{ profileLink.text }}
-          </RouterLink>        
+          <RouterLink :to="{ name: 'Profile' }" :class="{ underline: currentRouteName == 'Profile' }">
+            <img v-if="currentRouteName == 'Profile'" src="@/assets/images/profileON.svg" class="navImage"/>
+            <img v-if="currentRouteName != 'Profile'" src="@/assets/images/profile.svg" class="navImage"/>
+           </RouterLink>       
         </li>
-        <li v-else>
+        <!-- <li v-else>
           <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li>
-        <li>
-          <RouterLink :to="{ name: 'Search' }" :class="{ underline: currentRouteName == 'Search' }"> Search </RouterLink>
+        </li> -->
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'Search' }" :class="{ underline: currentRouteName == 'Search' }"> 
+            <img v-if="currentRouteName == 'Search'" src="@/assets/images/searchON.svg" class="navImage"/>
+            <img v-if="currentRouteName != 'Search'" src="@/assets/images/search.svg" class="navImage"/>
+          </RouterLink>
         </li>
       </ul>
     </nav>
@@ -89,11 +99,16 @@ const profileLink = computed(() => {
 <style scoped>
 @import "./assets/toast.css";
 
+.navImage {
+  height: 1.1em;
+}
+
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
   display: flex;
   align-items: center;
+  background-color: transparent;
+  color: none;
 }
 
 h1 {
@@ -105,16 +120,19 @@ h1 {
   display: flex;
   align-items: center;
   gap: 0.5em;
+  font-family: "SF-Compact-Semibold";
 }
 
 img {
-  height: 2em;
+  height: 0.8em;
 }
 
 a {
   font-size: large;
   color: black;
   text-decoration: none;
+  font-family: "SF-Compact-Regular";
+
 }
 
 ul {

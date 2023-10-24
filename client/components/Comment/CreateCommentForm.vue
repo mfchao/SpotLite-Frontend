@@ -63,28 +63,59 @@ onBeforeMount(async () => {
   <form v-if="postID != undefined"  @submit.prevent="create()">
     <label for="content">Comment:</label>
     <textarea id="content" v-model="content" placeholder="Add a comment!" required> </textarea>
-    <button type="submit" class="pure-button-primary pure-button" >Submit</button>
-    <button class="pure-button-primary pure-button" @click="emit('closeForm')" >Cancel</button>
+    <div class="buttons">
+      <button type="submit" class="" >Submit</button>
+      <button class="" @click="emit('closeForm')" >Cancel</button>
+    </div>
+    
   </form>
 </section>
 </template>
 
 <style scoped>
 form {
-  background-color: var(--base-bg);
-  border-radius: 1em;
+  -webkit-backdrop-filter: blur(8px);  
+  backdrop-filter: blur(8px); 
+  box-shadow: 0px 4px 10px 4px rgb(0 0 0 / 40%);
+  background: rgba(255, 255, 255, 0.5); 
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
+  border: 2px solid black;
 }
 
 textarea {
-  font-family: inherit;
+  font-family: "SF-Compact-Thin";
   font-size: inherit;
   height: 6em;
   padding: 0.5em;
   border-radius: 4px;
   resize: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
 }
+
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1em;
+  width: 100%;
+  margin-top: 6px;
+}
+
+button {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0);
+  border: 2px solid black;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+
 </style>

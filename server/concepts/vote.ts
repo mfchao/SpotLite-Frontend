@@ -24,19 +24,19 @@ export default class VoteConcept {
       if (!upvoteComment) {
         const _id = await this.votes.createOne({ comment, upvotes });
         await this.updateUsers(_id, user);
-        return { msg: "Created comment upvote!", upvote: await this.votes.readOne({ _id }) };
+        return { upvote: await this.votes.readOne({ _id }) };
       } else if (!upvoteComment.upvotes) {
         upvoteComment.upvotes = voteInt;
         await this.updateUsers(upvoteComment._id, user);
         await this.votes.updateOne({ comment }, upvoteComment);
 
-        return { msg: "Created comment upvote!", upvote: await this.votes.readOne({ comment }) };
+        return { upvote: await this.votes.readOne({ comment }) };
       } else {
         upvoteComment.upvotes++;
         await this.updateUsers(upvoteComment._id, user);
 
         await this.votes.updateOne({ comment }, upvoteComment);
-        return { msg: "Upvote comment sucessful!", upvote: await this.votes.readOne({ comment }) };
+        return { upvote: await this.votes.readOne({ comment }) };
       }
     } else if (post) {
       let upvotePost = await this.votes.readOne({ post });
@@ -46,19 +46,19 @@ export default class VoteConcept {
       if (!upvotePost) {
         const _id = await this.votes.createOne({ post, upvotes });
         await this.updateUsers(_id, user);
-        return { msg: "Created post upvote!", upvote: await this.votes.readOne({ _id }) };
+        return { upvote: await this.votes.readOne({ _id }) };
       } else if (!upvotePost.upvotes) {
         upvotePost.upvotes = voteInt;
         await this.updateUsers(upvotePost._id, user);
         await this.votes.updateOne({ comment }, upvotePost);
 
-        return { msg: "Created post upvote!", upvote: await this.votes.readOne({ comment }) };
+        return { upvote: await this.votes.readOne({ comment }) };
       } else {
         upvotePost.upvotes++;
         await this.updateUsers(upvotePost._id, user);
         await this.votes.updateOne({ post }, upvotePost);
 
-        return { msg: "Upvote post sucessful!", upvote: await this.votes.readOne({ post }) };
+        return { upvote: await this.votes.readOne({ post }) };
       }
     } else {
       throw new BadValuesError("comment or post must be non-empty!");
@@ -76,19 +76,19 @@ export default class VoteConcept {
       if (!downvoteComment) {
         const _id = await this.votes.createOne({ comment, downvotes });
         await this.updateUsers(_id, user);
-        return { msg: "Created downvote comment!", downvote: await this.votes.readOne({ _id }) };
+        return { downvote: await this.votes.readOne({ _id }) };
       } else if (!downvoteComment.downvotes) {
         downvoteComment.downvotes = voteInt;
         await this.updateUsers(downvoteComment._id, user);
         await this.votes.updateOne({ comment }, downvoteComment);
 
-        return { msg: "Created comment downvote!", downvote: await this.votes.readOne({ comment }) };
+        return { downvote: await this.votes.readOne({ comment }) };
       } else {
         downvoteComment.downvotes++;
         await this.updateUsers(downvoteComment._id, user);
         await this.votes.updateOne({ comment }, downvoteComment);
 
-        return { msg: "Downvote comment sucessful!", downvote: await this.votes.readOne({ comment }) };
+        return { downvote: await this.votes.readOne({ comment }) };
       }
     } else if (post) {
       let downvotePost = await this.votes.readOne({ post });
@@ -98,19 +98,19 @@ export default class VoteConcept {
       if (!downvotePost) {
         const _id = await this.votes.createOne({ post, downvotes });
         await this.updateUsers(_id, user);
-        return { msg: "Created downvote post!", downvote: await this.votes.readOne({ _id }) };
+        return { downvote: await this.votes.readOne({ _id }) };
       } else if (!downvotePost.downvotes) {
         downvotePost.downvotes = voteInt;
         await this.updateUsers(downvotePost._id, user);
         await this.votes.updateOne({ comment }, downvotePost);
 
-        return { msg: "Created post downvote!", downvote: await this.votes.readOne({ comment }) };
+        return { downvote: await this.votes.readOne({ comment }) };
       } else {
         downvotePost.downvotes++;
         await this.updateUsers(downvotePost._id, user);
         await this.votes.updateOne({ post }, downvotePost);
 
-        return { msg: "Downvote post sucessful!", downvote: await this.votes.readOne({ post }) };
+        return { downvote: await this.votes.readOne({ post }) };
       }
     } else {
       throw new BadValuesError("comment or post must be non-empty!");
@@ -153,7 +153,7 @@ export default class VoteConcept {
         upvoteComment.upvotes--;
         await this.removeUser(upvoteComment._id, user);
         await this.votes.updateOne({ comment }, upvoteComment);
-        return { msg: "Removed comment upvote!", upvote: await this.votes.readOne({ comment }) };
+        return { upvote: await this.votes.readOne({ comment }) };
       }
     } else if (post) {
       let upvotePost = await this.votes.readOne({ post });
@@ -165,7 +165,7 @@ export default class VoteConcept {
         upvotePost.upvotes--;
         await this.removeUser(upvotePost._id, user);
         await this.votes.updateOne({ post }, upvotePost);
-        return { msg: "Removed comment upvote!", upvote: await this.votes.readOne({ post }) };
+        return { upvote: await this.votes.readOne({ post }) };
       }
     } else {
       throw new BadValuesError("comment or post must be non-empty!");
@@ -185,7 +185,7 @@ export default class VoteConcept {
         downvoteComment.downvotes--;
         await this.removeUser(downvoteComment._id, user);
         await this.votes.updateOne({ comment }, downvoteComment);
-        return { msg: "Removed comment downvote!", downvote: await this.votes.readOne({ comment }) };
+        return { downvote: await this.votes.readOne({ comment }) };
       }
     } else if (post) {
       let downvotePost = await this.votes.readOne({ post });
@@ -197,7 +197,7 @@ export default class VoteConcept {
         downvotePost.downvotes--;
         await this.removeUser(downvotePost._id, user);
         await this.votes.updateOne({ post }, downvotePost);
-        return { msg: "Removed comment downvote!", downvote: await this.votes.readOne({ post }) };
+        return { downvote: await this.votes.readOne({ post }) };
       }
     } else {
       throw new BadValuesError("comment or post must be non-empty!");

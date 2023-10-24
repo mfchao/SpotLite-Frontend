@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
@@ -6,6 +7,7 @@ import PostComponent from "@/components/Post/PostComponent.vue";
 import { useSpotliteStore } from "@/stores/spotlite";
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
+import UserComponent from "./UserComponent.vue";
 
 
 const { cycleDay } = storeToRefs(useSpotliteStore());
@@ -21,10 +23,10 @@ const loadedPost = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 let searchAuthor = ref("");
-let userBio = ref("");
-let userSocials = ref("");
 let isASpotliter = ref(false);
 let cycleDays = ref("");
+let user = ref("");
+let loaded = ref(false);
 
 async function checkIfSpotliter(userId: string) {
   const isUserSpotliter = await isSpotliter(userId);
@@ -51,15 +53,24 @@ async function getPosts(author?: string) {
   posts.value = postResults;
 }
 
+async function settings() {
+  void router.push({ name: "Settings" });
+}
+
+async function postView(postId: string) {
+  console.log("go")
+  void router.push({ name: "PostView", params: { id: postId }});
+}
+
 onBeforeMount(async () => {
   await getPosts(currentUsername.value);
   loadedPost.value = true;
   
   const fetchedUser = await getUsers(currentUsername.value);
-  userBio.value = fetchedUser[0].bio;
-  userSocials.value = fetchedUser[0].socials;
+  user.value = fetchedUser[0];
 
   await checkIfSpotliter(fetchedUser[0]._id)
+  loaded.value = true;
   
 });
 
@@ -67,32 +78,51 @@ onBeforeMount(async () => {
 
 <template>
 
-<h3>Your Info:</h3>
 
-    <section class="posts" v-if="userBio && userSocials">
-        <p class="username">{{ currentUsername }}</p>
-        <p class="bio">{{ userBio}}</p>
-        <p class="socials">{{ userSocials }}</p>
-    </section>  
+    <section class="users" v-if="loaded && user">
+      <article >
+        <button>
+          <img src="@/assets/images/settings.svg" @click="settings" class="svg"/>
+        </button>
+        <UserComponent :user="user" />
+      </article>
+    </section>
 
 
-<h3>Your Posts:</h3>
+    <!-- remove  v-if="isASpotliter" to view posts -->
+<h1 v-if="isASpotliter">Your Posts This SpotLite Cycle:</h1>
+
+<section class="spotlite" v-if="isASpotliter">
+  <p class="username">{{ cycleDay }} days left in your SpotLite </p>
+</section> 
   
-  <section class="posts" v-if="loadedPost && posts.length !== 0">
-    <article v-for="post in posts" :key="post._id">
+  <section class="posts" v-if="isASpotliter && loadedPost && posts.length !== 0">
+    <article v-for="post in posts" :key="post._id" class="articlePost">
+      <!-- <p @click="postView(post._id)">See Post</p> -->
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" />
     </article>
   </section>
 
-  <section class="spotlite" v-if="isASpotliter">
-    <p class="username">Days left in your SpotLite:{{ cycleDay }}</p>
-</section> 
+
 
 
   
 </template>
 
 <style scoped>
+h1 {
+  text-align: center;
+  font-family: "SF-Compact-Medium";
+  letter-spacing: 0.07em;
+  font-size: 0.9em;
+}
+
+.username {
+  text-align: center;
+  font-family: "SF-Compact-Regular";
+  font-size: 0.85em;
+}
+
 section {
   display: flex;
   flex-direction: column;
@@ -106,13 +136,55 @@ p,
   max-width: 60em;
 }
 
+button {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  background: none;
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+  transition: .3s ease;
+  margin-right: 5px;
+}
+
+button:hover {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  background: none;
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+  transition: .3s ease;
+  margin-right: 5px;
+
+}
+
+.svg  {
+  width: 1.5em;
+}
+
 article {
-  background-color: var(--base-bg);
   border-radius: 1em;
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 0.3em;
   padding: 1em;
+  margin-bottom: 1em;
+}
+
+.articlePost {
+  -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+  backdrop-filter: blur(8px); /* Chrome and Opera */
+  box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 8%);
+  background: rgba(255, 255, 255, 0.4); 
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  padding: 1em;
+  margin-bottom: 1em;
 }
 
 .posts, .users {

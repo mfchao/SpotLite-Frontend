@@ -6,8 +6,6 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-
-
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 let post = ref(null);
@@ -33,7 +31,7 @@ async function getPostByID(id: string ) {
 onBeforeMount(async () => {
   const id = route.params.id.toString();
   postID.value = id;
-  // await getPostByID(postID.value)
+  await getPostByID(postID.value)
 
 });
 
