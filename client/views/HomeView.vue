@@ -72,6 +72,7 @@ function registerUser() {
 }
 
 
+
 h1 {
   text-align: center;
   font-family: "SF-Compact-Semibold";

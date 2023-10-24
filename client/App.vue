@@ -30,6 +30,7 @@ async function checkIfSpotliter(userId: string) {
 };
 
 
+console.log(currentRouteName.value)
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
   try {
@@ -42,11 +43,7 @@ onBeforeMount(async () => {
   
 });
 
-// const profileLink = computed(() => {
-//   return currentRouteName.value === 'Profile'
-//     ? { text: 'Settings', route: 'Settings' }
-//     : { text: 'Profile', route: 'Profile' };
-// });
+
 </script>
 
 <template>
@@ -60,28 +57,25 @@ onBeforeMount(async () => {
       </div>
       <ul>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> 
+          <RouterLink :to="{ name: 'Home' }" > 
             <img v-if="currentRouteName == 'Home'" src="@/assets/images/homeON.svg" class="navImage"/>
             <img v-if="currentRouteName != 'Home'" src="@/assets/images/home.svg" class="navImage"/>
            </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: '+Post' }" :class="{ underline: currentRouteName == '+Post' }">
+          <RouterLink :to="{ name: '+Post' }">
             <img v-if="currentRouteName == '+Post'" src="@/assets/images/addON.svg" class="navImage"/>
             <img v-if="currentRouteName != '+Post'" src="@/assets/images/add.svg" class="navImage"/>
            </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Profile' }" :class="{ underline: currentRouteName == 'Profile' }">
+          <RouterLink :to="{ name: 'Profile' }">
             <img v-if="currentRouteName == 'Profile'" src="@/assets/images/profileON.svg" class="navImage"/>
             <img v-if="currentRouteName != 'Profile'" src="@/assets/images/profile.svg" class="navImage"/>
            </RouterLink>       
         </li>
-        <!-- <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li> -->
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Search' }" :class="{ underline: currentRouteName == 'Search' }"> 
+          <RouterLink :to="{ name: 'Search' }" > 
             <img v-if="currentRouteName == 'Search'" src="@/assets/images/searchON.svg" class="navImage"/>
             <img v-if="currentRouteName != 'Search'" src="@/assets/images/search.svg" class="navImage"/>
           </RouterLink>

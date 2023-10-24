@@ -25,7 +25,7 @@ h1 {
   text-transform: uppercase;
 }
 
-main {
+.column {
   background-image: url("@/assets/images/gradient3.png");
   background-repeat: no-repeat;
   background-size: fill;

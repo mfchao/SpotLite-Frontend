@@ -29,6 +29,7 @@ onBeforeMount(async () => {
     await getSpotLitePool();
     const spotLiterIds = pool.value.map((spotliter) => spotliter._id);
    
+    // commented out for demo of posts
     // await incrementCycleDays(spotLiterIds);
     spotliters.value = await getSpotliters();
 
@@ -48,7 +49,13 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div v-if="cycleDay == 1">
+  <!-- Commented out closing cards and checking and incrementing cycle days for the sake of demo. 
+  Incrementing the SpotLite cycle every week will clear and reset all posts, comments, and upvotes after each week. 
+  Since I want the feed and spotliters to be populated with content when you grade this, I've commented out anything that 
+  has to do with the resetting part of the SpotLite concept.  -->
+
+
+    <!-- <div v-if="cycleDay == 1"> -->
         <h3 >Welcome This Week's SpotLiters:</h3>
         <p v-if="!loaded">Loading SpotLiters...</p>
         <div v-if="loaded" class="info">
@@ -57,17 +64,17 @@ onBeforeMount(async () => {
           </article>
         </div>
        
-    </div>
-    <div v-else-if="cycleDay == 7">
-        <h3 >Thanks To This Week's SpotLiters:</h3>
+    <!-- </div> -->
+    <!-- <div v-else-if="cycleDay == 7"> -->
+        <!-- <h3 >Thanks To This Week's SpotLiters:</h3>
         <p v-if="!loaded">Loading SpotLiters...</p>
         <div v-if="loaded" class="info">
           <article v-for="user in spotliteUsers" :key="user.username" >
             <SpotInfoCard :user="user" />
           </article>
-        </div>
+        </div> -->
        
-    </div>
+    <!-- </div> -->
  
 </template>
 
