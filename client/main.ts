@@ -8,11 +8,11 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-import "@/fonts/SF-Compact-Text-Bold.ttf";
-import "@/fonts/SF-Compact-Text-Medium.ttf";
-import "@/fonts/SF-Compact-Text-MediumItalic.ttf";
-import "@/fonts/SF-Compact-Text-Regular.ttf";
-import "@/fonts/SF-Compact-Text-Semibold.ttf";
+import "@/public/fonts/SF-Compact-Text-Bold.ttf";
+import "@/public/fonts/SF-Compact-Text-Medium.ttf";
+import "@/public/fonts/SF-Compact-Text-MediumItalic.ttf";
+import "@/public/fonts/SF-Compact-Text-Regular.ttf";
+import "@/public/fonts/SF-Compact-Text-Semibold.ttf";
 
 const app = createApp(App);
 const pinia = createPinia();

@@ -30,7 +30,6 @@ async function checkIfSpotliter(userId: string) {
 };
 
 
-console.log(currentRouteName.value)
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
   try {
